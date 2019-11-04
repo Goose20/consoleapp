@@ -65,7 +65,7 @@ public class DbSpeak {
         
     }
     public boolean login(String username, String password) {
-        boolean sucess = false;
+        boolean success = false;
         
         String sql = "SELECT * FROM User where username = ? and password = ?";
         try {
@@ -73,15 +73,15 @@ public class DbSpeak {
             ResultSet results = statement.executeQuery();
             
             while(results.next()) {
-                if(username == results.getString("username") && password == results.getString("password")) {
-                    sucess = true;
+                if((username == null ? results.getString("username") == null : username.equals(results.getString("username"))) && (password == null ? results.getString("password") == null : password.equals(results.getString("password")))) {
+                    success = true;
                 }
             }
         } catch (SQLException ex) {
             System.out.println("login error");
         }
         
-        return sucess;
+        return success;
     }
     public void deketeMovie(long movieId) {
         PreparedStatement statement = null;
