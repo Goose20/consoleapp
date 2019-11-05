@@ -10,6 +10,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import movieProject.DbSpeak;
 
 /**
@@ -20,6 +22,15 @@ public class Server {
     private ServerSocket serverSocket;
         private static ExecutorService pool = Executors.newFixedThreadPool(4);
         private boolean listening;
+        
+        public void StopServer(){
+        try {
+            this.serverSocket.close();
+        } catch (IOException ex) {
+            System.out.print("Server Shutdown failiar");
+        }
+        }
+                
         
         public void StartServer(){
             try {

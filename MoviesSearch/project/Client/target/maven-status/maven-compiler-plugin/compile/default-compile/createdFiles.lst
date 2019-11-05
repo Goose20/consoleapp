@@ -1,3 +1,6 @@
 client/MainForm.class
 client/App.class
 client/MainForm$1.class
+client/AdminForm$1.class
+client/AdminForm.class
+client/Client.class

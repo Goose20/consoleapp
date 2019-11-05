@@ -6,9 +6,10 @@
 package movieProject;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+/*import movieProject.Models;*/
+import movieProject./*Models.*/MovieModel;
 
 /**
  *
@@ -33,30 +34,41 @@ public class DbSpeak {
         return connection;
     }
     
-    public LinkedList<MovieModel> getMovie(String mName) throws SQLException {
+    public LinkedList<MovieModel> Search(String mName, String genre) throws SQLException {
         LinkedList<MovieModel> moviesList = new LinkedList<MovieModel>(); 
-        MovieModel model = new MovieModel();
+        MovieModel model = new /*Models.*/MovieModel();
         PreparedStatement statement = null;
         
-        String sql = "select * from Movies where movieName =?";
+        String sql = "select movieName, description, genreName from Movies, Genre where movieName =%'"+ mName +"'% and genreName = %'"+ genre +"'% and Genre.genreId = Movies.movieId";
         
-        statement = DbSpeak.getConnection().prepareStatement(sql);
-        statement.setString(1, mName);
-        ResultSet results = statement.executeQuery();
         try {
+            statement = DbSpeak.getConnection().prepareStatement(sql);
+            ResultSet results = statement.executeQuery();
+            MovieModel movie;
             while(results.next()) {
-                model.setName(results.getString("movieName"));
-                model.setGenre(results.getString("genreId"));
+                MovieModel.setMovie(results.getString("movieName"), results.getString("description"), results.getString("genreName"));
                 moviesList.add(model);
+                if(genre != null && !(genre.equals(results.getString("genreName")))) {
+                    
+                }
             }
+            
         }catch(SQLException ex) {
             System.out.println("Server query failed");
         }
         return moviesList;
     }
-    public void addMovie(long movieId, String mName,Long genreId) throws SQLException {
+
+    /**
+     *
+     * @param movieId
+     * @param mName
+     * @param genreId
+     * @throws SQLException
+     */
+    public static void addMovie(String movieId, String mName,String description, String genreId) throws SQLException {
         PreparedStatement statement = null;
-        String sql = "INSERT INTO Movies(movieId, movieName, description, genreId) VALUES ("+ movieId +", '"+ mName +"', null, "+ genreId +")";
+        String sql = "INSERT INTO Movies(movieId, movieName, description, genreId) VALUES ("+ movieId +", '"+ mName +"', '"+ description +"', "+ genreId +")";
         try {
             statement = DbSpeak.getConnection().prepareStatement(sql);
         } catch(SQLException ex) {
@@ -64,7 +76,16 @@ public class DbSpeak {
         }
         
     }
-    public boolean login(String username, String password) {
+    public static void addGenre(String genreId, String genreName) {
+        PreparedStatement statement = null;
+        String sql = "INSERT INTO Genre(genreId, genreName) VALUES ("+ genreId +", '"+ genreName +"')";
+        try {
+            statement = DbSpeak.getConnection().prepareStatement(sql);
+        } catch(SQLException ex) {
+            System.out.println("genre add error");
+        }
+    }
+    public static boolean login(String username, String password) {
         boolean success = false;
         
         String sql = "SELECT * FROM User where username = ? and password = ?";
@@ -83,7 +104,7 @@ public class DbSpeak {
         
         return success;
     }
-    public void deketeMovie(long movieId) {
+    public static void deleteMovie(String movieId) {
         PreparedStatement statement = null;
         
         String sql = "delete from Movies where movieId = "+ movieId;
@@ -92,23 +113,6 @@ public class DbSpeak {
             statement.executeUpdate();
         } catch (SQLException ex) {
             System.out.println("delete movie error");
-        }
-    }
-
-    class MovieModel{
-        private String Name;
-        private String Genre;
-        public String getName()
-        {
-            return this.Name;
-        }
-        public void setName(String name)
-        {
-            this.Name = name; 
-        }
-
-        private void setGenre(String genre) {
-            this.Genre = genre;
         }
     }
 }

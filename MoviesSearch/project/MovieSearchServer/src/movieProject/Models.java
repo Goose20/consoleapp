@@ -9,6 +9,28 @@ package movieProject;
  *
  * @author sjoosthuizen
  */
-public class Models {
+/*public class Models {*/
     
-}
+    
+    
+    class MovieModel {
+        private static String movieName;
+        private static int ID;
+        private static String description;
+        private static String genre;
+        public String getMovie()
+        {
+            return this.movieName;
+        }
+        public static void setMovie(String name, String description, String genre)
+        {
+            MovieModel.movieName = name;  
+            MovieModel.description = description; 
+            MovieModel.ID = ID;
+            MovieModel.genre = genre; 
+        }
+        public String getName() {
+            return this.movieName;
+        }
+    }
+/*}*/

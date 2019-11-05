@@ -15,8 +15,11 @@ import java.sql.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.LinkedList;
-import movieProject.DbSpeak.MovieModel;
+import movieProject.DbSpeak.*;
+/*import movieProject.Models;*/
+import movieProject./*Models.*/MovieModel;
 
 
 /**
@@ -37,15 +40,33 @@ public class Diplomat implements Runnable{
     @Override
     public void run() {
         try {
+            DbSpeak query = new DbSpeak();
+            String s = null;
+            String request = this.in.readLine();
             while(true) {
-                String request = this.in.readLine();
-                if(!request.isBlank()){
-                    LinkedList<MovieModel> result = QueryDb(request);
-                    this.out.println(result);
+                if(request.equals("search")) {
+                    LinkedList<MovieModel> results = query.Search(this.in.readLine(), this.in.readLine());
+                    out.print(results);
                 }
+                else if(request.equals("login")) {
+                    boolean logedin = query.login(this.in.readLine(), this.in.readLine());
+                    out.println(logedin);
+                }
+                else if(request.equals("addMovie")) {
+                    DbSpeak.addMovie(this.in.readLine(), this.in.readLine(), this.in.readLine(), this.in.readLine());
+                }
+                else if(request.equals("addGenre")) {
+                    DbSpeak.addGenre(this.in.readLine(), this.in.readLine());
+                }
+                else if(request.equals("deleteMovie")) {
+                    DbSpeak.deleteMovie(this.in.readLine());
+                }
+                
             }
         } catch(IOException e) {
 
+        } catch (SQLException ex) {
+            Logger.getLogger(Diplomat.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             out.close();
             try {
@@ -54,17 +75,6 @@ public class Diplomat implements Runnable{
                 Logger.getLogger(Diplomat.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-    }
-    public LinkedList<MovieModel> QueryDb(String request){
-        try {
-            DbSpeak query = new DbSpeak();
-            LinkedList<DbSpeak.MovieModel> results = query.getMovie(request);
-            
-            return results;
-        } catch (SQLException ex) {
-            System.out.println("getmovie call");
-        }
-        return null;
     }
 
 }

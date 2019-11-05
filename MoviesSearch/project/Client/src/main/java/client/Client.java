@@ -7,7 +7,10 @@ package client;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.LinkedList;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -17,29 +20,86 @@ public class Client {
     private Client() {
         
     }
-    public void start() throws Exception {
+    
+        
+    public LinkedList<MovieModel> search(String mName, String genre) {
+        LinkedList<MovieModel> moviesList = new LinkedList<MovieModel>(); 
+        MovieModel model = new /*Models.*/MovieModel();
         try {
-            Socket clientSocket = new Socket("127.0.0.1", 7777);
-            String query = "Start";
-            while(query.toLowerCase() != "exit")
-            {
-            System.out.println("Enter Movie Name");
-            query = input.next();
-            PrintWriter out = new PrintWriter(clientSocket.getOutputStream(),true);
-            BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-            out.println(query);
-            String result = in.readLine();
-            System.out.println("The server replied:"+result);
-            
-            in.close();
-            out.close();
+            Socket s = new Socket("127.0.0.1",7777);
+            InputStreamReader in = new InputStreamReader(s.getInputStream());
+            PrintStream out =new PrintStream(s.getOutputStream());
+            while(true) {
+                out.println("search");
+                out.println(mName);
+                out.println(genre);
             }
-            input.close();
-            clientSocket.close();
+            
+        } catch (IOException ex) {
+            System.out.println("Search error");
         }
-        catch(Exception e)
-        {
-            System.out.println("Client failed");
+        
+    }
+    public boolean login(String username, String password) {
+        boolean isConnected = false ; 
+        try {
+            Socket s = new Socket("127.0.0.1",7777);
+            BufferedReader br = new BufferedReader(new InputStreamReader(s.getInputStream()));
+            PrintStream ps =new PrintStream(s.getOutputStream());
+            while(true) {
+                ps.println("login");
+                ps.println(username);
+                ps.println(password);
+                
+            }
+        } catch (IOException ex) {
+            System.out.println("Search error");
+        }
+        return isConnected;
+    }
+    public void addMovie(String movieId, String mName, String description, String genreId) {
+        try {
+            Socket s = new Socket("127.0.0.1",7777);
+            BufferedReader br = new BufferedReader(new InputStreamReader(s.getInputStream()));
+            PrintStream ps =new PrintStream(s.getOutputStream());
+            while(true) {
+                ps.println("addMovie");
+                ps.println(movieId);
+                ps.println(mName);
+                ps.println(description);
+                ps.println(genreId);
+            }
+        } catch (IOException ex) {
+            System.out.println("Search error");
         }
     }
+    public void addGenre(String genreId, String genreName) {
+        try {
+            Socket s = new Socket("127.0.0.1",7777);
+            BufferedReader br = new BufferedReader(new InputStreamReader(s.getInputStream()));
+            PrintStream ps =new PrintStream(s.getOutputStream());
+            while(true) {
+                ps.println("addGenre");
+                ps.println(genreId);
+                ps.println(genreName);
+            }
+        } catch (IOException ex) {
+            System.out.println("Search error");
+        }
+    }
+    public void deleteMovie(String movieId) {
+        try {
+            Socket s = new Socket("127.0.0.1",7777);
+            BufferedReader br = new BufferedReader(new InputStreamReader(s.getInputStream()));
+            PrintStream ps =new PrintStream(s.getOutputStream());
+            while(true) {
+                ps.println("deleteMovie");
+                ps.println(movieId);
+            }
+        } catch (IOException ex) {
+            System.out.println("Search error");
+        }
+    }
+
+
 }
